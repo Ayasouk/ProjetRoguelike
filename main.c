@@ -1,3 +1,5 @@
+#include "roguelike.h"
+
 int main() {
 	initialiser();
 	while (1) {
