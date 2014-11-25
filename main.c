@@ -1,9 +1,11 @@
+#include <stdlib.h>
 #include "roguelike.h"
 
 int main() {
     initialiser();
     generer();
     afficher();
+    return EXIT_SUCCESS;
 }
 
 /*int main() {
