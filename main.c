@@ -1,6 +1,12 @@
 #include "roguelike.h"
 
 int main() {
+    initialiser();
+    generer();
+    afficher();
+}
+
+/*int main() {
 	initialiser();
 	while (1) {
         generer();
@@ -12,4 +18,5 @@ int main() {
 			}
 		}
 	}
-}
+    return EXIT_SUCESS;
+}*/
