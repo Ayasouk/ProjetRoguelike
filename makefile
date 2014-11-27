@@ -1,11 +1,38 @@
+
+#le compilateur c utilisé
 CC = gcc
-OPTS = -Wall
 
-roguelike.exe: main.o roguelike.o
-	$(CC) $(OPTS) main.o roguelike.o -o roguelike.exe
+#les options à la compilations
+OPTIONS = -Wall -Wextra
 
-main.o: main.c
-	$(CC) $(OPTS) -c main.c
+#le nom du programme
+NAME = roguelike
 
-roguelike.o: roguelike.c
-	$(CC) $(OPTS) -c roguelike.c
+#le nom du dossier contenant les fichiers .o générés lors de la compilation
+ODIR = o
+
+#le nom du dossier contenant les sources
+SRCDIR = src
+
+#le nom du dossier contenant les sources des tests
+TESTDIR = test
+
+
+main: main_o
+	$(CC) $(OPTIONS) $(ODIR)/$(SRCDIR)/*.o -o $(NAME).exe
+
+main_o: $(ODIR) $(ODIR)/$(SRCDIR)
+	cd $(ODIR)/$(SRCDIR); $(CC) $(OPTIONS) -c ../../$(SRCDIR)/*.c
+
+$(ODIR)/$(SRCDIR):
+	cd $(ODIR); mkdir $(SRCDIR)
+
+$(ODIR):
+	mkdir $(ODIR)
+
+run: main
+	$(NAME).exe
+
+clean:
+	rm $(ODIR)/$(SRCDIR)/*.o;
+	rm $(NAME).exe
