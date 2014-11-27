@@ -3,10 +3,8 @@
 #define N 50
 
 void initialiser(){
-
-
+  srand(time(NULL));
 }
-
 
 void generer(){
 
