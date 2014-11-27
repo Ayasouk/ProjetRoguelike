@@ -24,20 +24,25 @@ DOCDIR = doc
 main: main_o
 	$(CC) $(OPTIONS) $(ODIR)/$(SRCDIR)/*.o -o $(NAME).exe
 
-main_o: $(ODIR) $(ODIR)/$(SRCDIR)
+main_o:
 	mkdir -p $(ODIR)/$(SRCDIR)
 	cd $(ODIR)/$(SRCDIR); $(CC) $(OPTIONS) -c ../../$(SRCDIR)/*.c
+
+test: test_o
+	$(CC) $(OPTIONS) $(ODIR)/$(TESTDIR)/*.o -o $(NAME)_test.exe
+
+test_o:
+	mkdir -p $(ODIR)/$(TESTDIR)
+	cd $(ODIR)/$(TESTDIR); $(CC) $(OPTIONS) -c ../../$(TESTDIR)/*.c
 
 run: main
 	$(NAME).exe
 
 clean:
-	rm -f $(ODIR)/$(SRCDIR)/*.o;
+	rm -rf $(ODIR)
 	rm -f $(NAME).exe
 
 docgen:
-	mkdir -p $(DOCDIR)
-	rmdir $(DOCDIR)/* --ignore-fail-on-non-empty
+	rm -rf $(DOCDIR)
+	mkdir $(DOCDIR)
 	doxygen
-
-all: clean main docgen
