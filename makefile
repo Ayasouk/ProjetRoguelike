@@ -46,3 +46,11 @@ docgen:
 	rm -rf $(DOCDIR)
 	mkdir $(DOCDIR)
 	doxygen
+
+docpost: $(DOCDIR)
+	rm -rf ~/public_html/$(NAME)
+	mkdir -p ~/public_html/$(NAME)
+	cp -R $(DOCDIR)/html/* ~/public_html/$(NAME)
+	chmod -R 755 ~/public_html/$(NAME)
+
+$(DOCDIR): docgen
