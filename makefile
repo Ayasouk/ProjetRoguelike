@@ -17,22 +17,27 @@ SRCDIR = src
 #le nom du dossier contenant les sources des tests
 TESTDIR = test
 
+#le nom du dossier contenant la documentation
+DOCDIR = doc
+
 
 main: main_o
 	$(CC) $(OPTIONS) $(ODIR)/$(SRCDIR)/*.o -o $(NAME).exe
 
 main_o: $(ODIR) $(ODIR)/$(SRCDIR)
+	mkdir -p $(ODIR)/$(SRCDIR)
 	cd $(ODIR)/$(SRCDIR); $(CC) $(OPTIONS) -c ../../$(SRCDIR)/*.c
-
-$(ODIR)/$(SRCDIR):
-	cd $(ODIR); mkdir $(SRCDIR)
-
-$(ODIR):
-	mkdir $(ODIR)
 
 run: main
 	$(NAME).exe
 
 clean:
-	rm $(ODIR)/$(SRCDIR)/*.o;
-	rm $(NAME).exe
+	rm -f $(ODIR)/$(SRCDIR)/*.o;
+	rm -f $(NAME).exe
+
+docgen:
+	mkdir -p $(DOCDIR)
+	rmdir $(DOCDIR)/* --ignore-fail-on-non-empty
+	doxygen
+
+all: clean main docgen
