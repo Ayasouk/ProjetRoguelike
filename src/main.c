@@ -1,24 +1,20 @@
+/**
+ * @file main.c
+ * Fichier de la fonction principale.
+ * @author Hector Basset
+ * @author Youssef Lamniy
+ * @author Ayas Oukache
+ * @date 27 novembre 2014
+ */
+
 #include <stdlib.h>
-#include "roguelike.h"
+
+#include "interface.h"
 
 int main() {
-    initialiser();
-    generer();
-    afficher();
-    return EXIT_SUCCESS;
+	init_interface();
+	display_message("Coucou\n");
+	wait_action();
+	final_interface();
+	return EXIT_SUCCESS;
 }
-
-/*int main() {
-	initialiser();
-	while (1) {
-        generer();
-		while (1) {
-			afficher();
-			deplacement();
-			if (gagne()) {
-				break;
-			}
-		}
-	}
-    return EXIT_SUCESS;
-}*/

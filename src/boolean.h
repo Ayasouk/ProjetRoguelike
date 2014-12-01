@@ -1,16 +1,22 @@
+/**
+ * @file interface.h
+ * Fichier définissant un type booléen.
+ * @author Hector Basset
+ * @date 27 novembre 2014
+ */
 
-#ifndef BOOLEAN
+#ifndef BOOLEAN_H
 
-#define BOOLEAN
+#define BOOLEAN_H
 
-typedef char boolean;
+typedef unsigned char boolean;
 
 #define false 0
 
 #define FALSE 0
 
-#define true 0
+#define true 1
 
-#define TRUE 0
+#define TRUE 1
 
 #endif
