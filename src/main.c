@@ -13,7 +13,6 @@
 
 int main() {
 	init_interface();
-	display_message("Coucou\n");
 	wait_action();
 	final_interface();
 	return EXIT_SUCCESS;

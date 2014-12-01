@@ -12,6 +12,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "ansi.h"
 #include "interface.h"
 
 /**
@@ -34,9 +35,12 @@ void init_interface() {
 	actual = before;//copie de ces attributs
 	actual.c_cc[VMIN] = 0;//nombre minimum de caractères pour la lecture à 0
 	actual.c_cc[VTIME] = 0;//temps d'attente lors de la lecture à 0
-	actual.c_lflag &= ~ECHO;//désactivation de l'affichage des caractères tapés
+	actual.c_lflag &= ~ECHO;//désactivation de l'affichage de la saisie
 	actual.c_lflag &= ~ICANON;//passage en mode non canonique
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &actual);//appliquation des attributs au terminal
+	ansi_set_color(ANSI_DEFAULT_COLOR);
+	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
+	ansi_clear_screen();
 }
 
 void final_interface() {
@@ -50,9 +54,9 @@ void display_message(char message[]) {
 Action wait_action() {
 	while (1) {
 		switch (getchar()) {
-			case 27:
+			case 27://code retourné par cetraines touche comme ECHAP ou les touches flêchées
 				usleep(1);
-				if (getchar() == 91) {
+				if (getchar() == 91) {//la pression d'une touche flêche provoque la saisie de trois caractères (27 91 6x), les instructions suivantes permettent de voir si il s'agit donc d'une touche flêchée ou d'une autre touche spéciale 
 					switch (getchar()) {
 						case 65:
 							return TOP;
