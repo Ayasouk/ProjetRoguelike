@@ -24,6 +24,9 @@ Square * maze;
  */
 Dimension maze_dimension;
 
+/**
+ * La localisation du joueur dans le labyrinthe.
+ */
 Location player_location;
 
 void init_roguelike() {

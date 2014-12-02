@@ -3,7 +3,7 @@
 CC = gcc
 
 #les options à la compilations
-OPTIONS = -Wall
+OPTIONS = -Wall -Wextra
 
 #le nom du programme
 NAME = roguelike

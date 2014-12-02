@@ -11,6 +11,7 @@
 
 #define ROGUELIKE_H
 
+#include "boolean.h"
 #include "geo.h"
 
 /**
@@ -21,17 +22,17 @@ typedef enum {
 	/**
 	 * Case vide.
 	 */
-    AIR = ' ',
+    AIR,
 
 	/**
 	 * Case étant un mur.
 	 */
-    WALL = '#',
+    WALL,
 
 	/**
 	 * Case contenant le joueur.
 	 */
-    PLAYER = 'p'
+    PLAYER
 } Square;
 
 /**
@@ -98,5 +99,23 @@ Location * get_player_location();
  * @param direction La direction vers laquelle le joueur doit se déplacer.
  */
 void move_player(Direction direction);
+
+/**
+ * Calcule si le joueur peut se déplacer dans la direction demandée.
+ * @return Si le joueur peut se déplacer dans la direction demandée.
+ */
+boolean player_can_move(Direction direction);
+
+/**
+ * Fonction retournant la vie du joueur.
+ * @return La vie du joueur.
+ */
+char get_player_life();
+
+/**
+ * Modifie la vie du joueur du montant donné.
+ * @param amount Le montant dont la vie est modifié.
+ */
+void modify_player_life(char amount);
 
 #endif

@@ -45,7 +45,17 @@ typedef enum {
 	/**
 	 * Frapper.
 	 */
-	HIT
+	HIT,
+
+	/**
+	 * Accepter.
+	 */
+	ACCEPT,
+
+	/**
+	 * Refuser.
+	 */
+	DENY
 } Action;
 
 /**

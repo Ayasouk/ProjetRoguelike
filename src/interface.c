@@ -42,6 +42,7 @@ void init_interface() {
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &actual);//appliquation des attributs au terminal
 	ansi_set_color(ANSI_DEFAULT_COLOR);
 	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
+	ansi_set_font(ANSI_DEFAULT_FONT);
 	ansi_hide_cursor();
 	ansi_clear_screen();
 	ansi_save_position();
@@ -56,7 +57,7 @@ void final_interface() {
 
 void display_message(char message[]) {
 	ansi_clear_screen_after();
-	printf(message);
+	fputs(message, stdout);
 	ansi_restore_position();
 }
 
@@ -69,6 +70,26 @@ void clear_message() {
  */
 Dimension current_dimension = {-1, -1};
 
+/**
+ * Fonction interne permettant d'afficher une case en fonction de son type.
+ * @param square Le type de case à afficher.
+ */
+void print_square(Square square) {
+	switch (square) {
+		case AIR:
+			putchar(' ');
+			break;
+		case WALL:
+			putchar('#');
+			break;
+		case PLAYER:
+			ansi_set_color(ANSI_CYAN);
+			putchar('p');
+			ansi_set_color(ANSI_DEFAULT_COLOR);
+			break;
+	}
+}
+
 void display_maze(Square * maze, Dimension * dimension) {
 	int i, j;
 	if (dimension->horizontal != current_dimension.horizontal || dimension->vertical != current_dimension.vertical) {
@@ -80,7 +101,7 @@ void display_maze(Square * maze, Dimension * dimension) {
 	ansi_up(current_dimension.vertical);
 	for (i = 0 ; i < current_dimension.vertical ; i++) {
 		for (j = 0 ; j < current_dimension.horizontal ; j++) {
-			putchar(maze[i * current_dimension.vertical + j]);
+			print_square(maze[i * current_dimension.vertical + j]);
 		}
 		ansi_next_line(1);
 	}
@@ -91,7 +112,7 @@ void update_square(Square square, Location * location) {
 	ansi_up(current_dimension.vertical);
 	ansi_right(location->column);
 	ansi_down(location->row);
-	putchar(square);
+	print_square(square);
 	ansi_restore_position();
 }
 
@@ -116,6 +137,12 @@ Action wait_action() {
 				}
 			case ' ':
 				return HIT;
+			case 'o':
+			case 'O':
+				return ACCEPT;
+			case 'n':
+			case 'N':
+				return DENY;
 		}
 	}
 }

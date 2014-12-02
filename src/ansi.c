@@ -118,6 +118,10 @@ void ansi_set_bg_color_rgb(unsigned char red, unsigned char green, unsigned char
 	printf("%s482;%u;%u;%um", CSI, red, green, blue);
 }
 
+void ansi_set_font(ANSIFont font) {
+	printf("%s%im", CSI, 10 + font);
+}
+
 void ansi_normal() {
 	printf("%s0m", CSI);
 }
