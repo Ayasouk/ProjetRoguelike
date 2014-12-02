@@ -1,17 +1,62 @@
+/**
+ * @file ansi.h
+ * Fichier définissant les fonctions générant des séquences ANSI permettant d'interagir avec le terminal et de modifier la mise en forme du texte.
+ * @author Hector Basset
+ * @date 1 décembre 2014
+ */
 
 #ifndef ANSI_H
 
 #define ANSI_H
 
+/**
+ * Type énuméré définissant les différentes couleurs directement sélectionnables en ANSI.
+ */
 typedef enum {
+
+	/**
+	 * Noir.
+	 */
 	ANSI_BLACK,
+
+	/**
+	 * Rouge.
+	 */
 	ANSI_RED,
+
+	/**
+	 * Vert.
+	 */
 	ANSI_GREEN,
+
+	/**
+	 * Jaune.
+	 */
 	ANSI_YELLOW,
+
+	/**
+	 * Bleu.
+	 */
 	ANSI_BLUE,
+
+	/**
+	 * Magenta.
+	 */
 	ANSI_MAGENTA,
+
+	/**
+	 * Cyan.
+	 */
 	ANSI_CYAN,
+
+	/**
+	 * Blanc.
+	 */
 	ANSI_WHITE,
+
+	/**
+	 * Couleur par défaut, varie selon les terminaux.
+	 */
 	ANSI_DEFAULT_COLOR = 9
 } ANSIColor;
 

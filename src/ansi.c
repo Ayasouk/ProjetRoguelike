@@ -1,6 +1,17 @@
+/**
+ * @file ansi.c
+ * Implémentation de ansi.h.
+ * @author Hector Basset
+ * @date 1 décembre 2014
+ */
+
+#include <stdio.h>
 
 #include "ansi.h"
 
+/**
+ * La séquence d'échappement.
+ */
 const char CSI[5] = "\033[";
 
 void ansi_up(unsigned int n) {

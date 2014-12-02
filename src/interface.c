@@ -3,7 +3,7 @@
  * Fichier implémentant l'interface avec l'utilisateur.
  * Cette implémentation utilise le terminal.
  * Elle le met en mode non canonique et désactive l'affichage de la saisie afin d'une meilleure interaction avec l'utilisateur.
- * Elle utilise les séquences AINSI pour les couleurs et le déplacement du curseur.
+ * Elle utilise les séquences ANSI pour les couleurs, la mise en forme tu texte et le déplacement du curseur.
  * @author Hector Basset
  * @date 1 décembre 2014
  */
@@ -13,7 +13,9 @@
 #include <unistd.h>
 
 #include "ansi.h"
+#include "geo.h"
 #include "interface.h"
+#include "roguelike.h"
 
 /**
  * Type renommant termios pour plus de clarté
@@ -40,15 +42,57 @@ void init_interface() {
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &actual);//appliquation des attributs au terminal
 	ansi_set_color(ANSI_DEFAULT_COLOR);
 	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
+	ansi_hide_cursor();
 	ansi_clear_screen();
+	ansi_save_position();
 }
 
 void final_interface() {
+	clear_message();
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &before);//réappliquation des atributs d'avant le jeu
+	putchar('\n');
+	ansi_show_cursor();
 }
 
 void display_message(char message[]) {
-	puts(message);
+	ansi_clear_screen_after();
+	printf(message);
+	ansi_restore_position();
+}
+
+void clear_message() {
+	ansi_clear_screen_after();
+}
+
+/**
+ * La dimension actuelle du labyrinthe.
+ */
+Dimension current_dimension = {-1, -1};
+
+void display_maze(Square * maze, Dimension * dimension) {
+	int i, j;
+	if (dimension->horizontal != current_dimension.horizontal || dimension->vertical != current_dimension.vertical) {
+		current_dimension = *dimension;
+		ansi_clear_screen();
+		ansi_down(current_dimension.vertical);
+		ansi_save_position();
+	}
+	ansi_up(current_dimension.vertical);
+	for (i = 0 ; i < current_dimension.vertical ; i++) {
+		for (j = 0 ; j < current_dimension.horizontal ; j++) {
+			putchar(maze[i * current_dimension.vertical + j]);
+		}
+		ansi_next_line(1);
+	}
+	ansi_restore_position();
+}
+
+void update_square(Square square, Location * location) {
+	ansi_up(current_dimension.vertical);
+	ansi_right(location->column);
+	ansi_down(location->row);
+	putchar(square);
+	ansi_restore_position();
 }
 
 Action wait_action() {
@@ -76,6 +120,6 @@ Action wait_action() {
 	}
 }
 
-void update() {
+void wait_ready() {
 	fflush(stdout);
 }

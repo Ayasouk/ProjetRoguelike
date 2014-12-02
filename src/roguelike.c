@@ -1,37 +1,90 @@
+/**
+ * @file roguelike.c
+ * Fichier implémentant les types et les fonctions du Roguelike.
+ * @author Hector Basset
+ * @author Youssef Lamniy
+ * @author Ayas Oukache
+ * @date 20 novembre 2014
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define TAILLE 30//ordre de la matrice
+#include "geo.h"
+#include "roguelike.h"
 
-typedef struct {
-    int ligne;
-    int column;
-} Coordonnee;
+/**
+ * Le pointeur vers la matrice de case contenant le labyrinthe.
+ */
+Square * maze;
 
-typedef struct {
-    int l1;
-    int c1;
-    int l2;
-    int c2;
-} Rectangle;
+/**
+ * Les dimensions du labyrinthe.
+ */
+Dimension maze_dimension;
 
-typedef enum {
-    VIDE = ' ',
-    MUR = '#'
-} Case;
+Location player_location;
 
-Case labyrinthe[TAILLE][TAILLE];
+void init_roguelike() {
+    srand(time(NULL));
+    maze = NULL;
+    maze_dimension.horizontal = maze_dimension.vertical = -1;
+    player_location.row = player_location.column = -1;
+}
 
-Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};
+void final_roguelike() {
+	free(maze);//libération de l'espace mémoire alloué au labyrinthe, inutile de vérifier si NULL car free(NULL) n'a tout simplement aucun effet
+}
+
+Square * get_maze() {
+	return maze;
+}
+
+Dimension * get_maze_dimension() {
+	return &maze_dimension;
+}
+
+void generate_maze() {
+	int i;
+	free(maze);//libération de l'espace mémoire alloué au labyrinthe, inutile de vérifier si NULL car free(NULL) n'a tout simplement aucun effet
+	maze = (Square *) malloc(20 * 20 * sizeof(Square));//allocation de la mémoire nécessaire pour stocker le labyrinthe
+	maze_dimension.horizontal = maze_dimension.vertical = 20;//sélection des dimensions du labyrinthe, pour l'instant constante à 20
+	for (i = 0 ; i < maze_dimension.horizontal * maze_dimension.vertical ; i++) {//remplissage du labyrinthe par des murs
+		maze[i] = WALL;
+	}
+	//choix du nombre de pièces...
+	//choix de leur taille et de leur placement...
+	//génération des couloirs
+	player_location.row = player_location.column = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
+}
+
+Location * get_player_location() {
+	return &player_location;
+}
+
+void move_player(Direction direction) {
+	switch (direction) {
+		case NORTH:
+			player_location.row--;
+			break;
+		case EAST:
+			player_location.column++;
+			break;
+		case SOUTH:
+			player_location.row++;
+			break;
+		case WEST:
+			player_location.column--;
+			break;
+	}
+}
+
+/*Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};
 
 int random2(int a, int b) {
     b +=1;
     return rand() % (b - a) + a;
-}
-
-void initialiser() {
-    srand(time(NULL));
 }
 
 void generer() {
@@ -60,22 +113,4 @@ void generer() {
             }
         }
     }
-}
-
-void afficher() {
-    int i, j;
-    for (i = 0 ; i < TAILLE ; i++) {
-        for (j = 0 ; j < TAILLE ; j++) {
-            printf("%c", labyrinthe[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-void deplacement() {
-
-}
-
-int gagne() {
-    return 0;
-}
+}*/
