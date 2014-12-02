@@ -7,14 +7,14 @@
 typedef struct {
     int ligne;
     int column;
-} Coordonnee;
+} t_coordonnee;
 
 typedef struct {
-    int l1;
-    int c1;
-    int l2;
-    int c2;
-} Rectangle;
+    t_coordonnee l1;
+    t_coordonnee c1;
+    t_coordonnee l2;
+    t_coordonnee c2;
+} t_salle;
 
 typedef enum {
     VIDE = ' ',
