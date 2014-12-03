@@ -90,7 +90,7 @@ int random2(int a, int b) {
     return rand() % (b - a) + a;
 }
 
-void generer() {
+void generer() {//la fonction de génération devient la fonction generate_maze(), continuer ou recopier le code à l'intérieur
     int i, j, n_salles, s;
     Rectangle * salles;
     for (i = 0 ; i < TAILLE ; i++) {
