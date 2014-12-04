@@ -60,6 +60,7 @@ void generate_maze() {
 	//choix de leur taille et de leur placement...
 	//génération des couloirs
 	player_location.row = player_location.column = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
+	maze[player_location.row * maze_dimension.horizontal + player_location.column] = PLAYER;
 }
 
 Location * get_player_location() {
@@ -67,6 +68,7 @@ Location * get_player_location() {
 }
 
 void move_player(Direction direction) {
+	maze[player_location.row * maze_dimension.horizontal + player_location.column] = AIR;
 	switch (direction) {
 		case NORTH:
 			player_location.row--;
@@ -81,6 +83,7 @@ void move_player(Direction direction) {
 			player_location.column--;
 			break;
 	}
+	maze[player_location.row * maze_dimension.horizontal + player_location.column] = PLAYER;
 }
 
 /*Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};

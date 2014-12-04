@@ -9,6 +9,8 @@
 
 #define ANSI_H
 
+#include "boolean.h"
+
 /**
  * Type énuméré définissant les différentes couleurs directement sélectionnables en ANSI.
  */
@@ -17,7 +19,7 @@ typedef enum {
 	/**
 	 * Noir.
 	 */
-	ANSI_BLACK,
+	ANSI_BLACK = 30,
 
 	/**
 	 * Rouge.
@@ -30,9 +32,9 @@ typedef enum {
 	ANSI_GREEN,
 
 	/**
-	 * Jaune.
+	 * Orange/Marron.
 	 */
-	ANSI_YELLOW,
+	ANSI_BROWN,
 
 	/**
 	 * Bleu.
@@ -50,6 +52,46 @@ typedef enum {
 	ANSI_CYAN,
 
 	/**
+	 * Gris clair.
+	 */
+	ANSI_LIGHT_GREY,
+
+	/**
+	 * Gris.
+	 */
+	ANSI_GREY = 90,
+
+	/**
+	 * Rouge clair.
+	 */
+	ANSI_LIGHT_RED,
+
+	/**
+	 * Vert clair.
+	 */
+	ANSI_LIGHT_GREEN,
+
+	/**
+	 * Jaune.
+	 */
+	ANSI_YELLOW,
+
+	/**
+	 * Bleu clair.
+	 */
+	ANSI_LIGHT_BLUE,
+
+	/**
+	 * Rose.
+	 */
+	ANSI_PINK,
+
+	/**
+	 * Cyan clair.
+	 */
+	ANSI_LIGHT_CYAN,
+
+	/**
 	 * Blanc.
 	 */
 	ANSI_WHITE,
@@ -57,7 +99,7 @@ typedef enum {
 	/**
 	 * Couleur par défaut, varie selon les terminaux.
 	 */
-	ANSI_DEFAULT_COLOR = 9
+	ANSI_DEFAULT_COLOR = 39
 } ANSIColor;
 
 /**
@@ -176,5 +218,15 @@ void ansi_set_bg_color_rgb(unsigned char red, unsigned char green, unsigned char
 void ansi_set_font(ANSIFont font);
 
 void ansi_normal();
+
+void ansi_bold(boolean bold);
+
+void ansi_underlined(boolean underlined);
+
+void ansi_overlined(boolean overlined);
+
+void ansi_italic(boolean italic);
+
+void ansi_framed(boolean framed);
 
 #endif

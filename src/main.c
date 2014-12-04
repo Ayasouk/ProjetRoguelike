@@ -20,25 +20,25 @@ int main() {//pour l'instant, fonction main pour tester l'interface et la géné
 	init_roguelike();
 	init_interface();
 	generate_maze();
-	display_maze(get_maze(), get_maze_dimension());
-	display_message("Un test");
-	update_square(PLAYER, get_player_location());
-	wait_action();
-	move_player(EAST);
-	update_square(PLAYER, get_player_location());
-	display_message("Coucou");
-	wait_action();
-	move_player(SOUTH);
-	update_square(PLAYER, get_player_location());
-	display_message("AH AH");
-	wait_action();
-	move_player(WEST);
-	update_square(PLAYER, get_player_location());
-	move_player(NORTH);
-	update_square(PLAYER, get_player_location());
-	move_player(WEST);
-	update_square(PLAYER, get_player_location());
-	final_interface();
-	final_roguelike();
-	return EXIT_SUCCESS;
+	while (1) {
+		display_maze(get_maze(), get_maze_dimension());
+		switch (wait_action()) {
+			case TOP:
+				move_player(NORTH);
+				break;
+			case BOTTOM:
+				move_player(SOUTH);
+				break;
+			case RIGHT:
+				move_player(EAST);
+				break;
+			case LEFT:
+				move_player(WEST);
+				break;
+			case EXIT:
+				final_interface();
+				final_roguelike();
+				return EXIT_SUCCESS;
+		}
+	}
 }
