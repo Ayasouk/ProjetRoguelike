@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include "ansi.h"
+#include "boolean.h"
 #include "geo.h"
 #include "interface.h"
 #include "roguelike.h"
@@ -51,6 +52,8 @@ void init_interface() {
 void final_interface() {
 	clear_message();
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &before);//réappliquation des atributs d'avant le jeu
+	ansi_set_color(ANSI_DEFAULT_COLOR);
+	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
 	putchar('\n');
 	ansi_show_cursor();
 }
@@ -77,15 +80,23 @@ Dimension current_dimension = {-1, -1};
 void print_square(Square square) {
 	switch (square) {
 		case AIR:
+			ansi_set_bg_color(ANSI_BLACK);
 			putchar(' ');
+			ansi_set_bg_color(ANSI_DEFAULT_COLOR);
 			break;
 		case WALL:
-			putchar('#');
+			ansi_set_bg_color(ANSI_LIGHT_GREY);
+			putchar(' ');
+			ansi_set_bg_color(ANSI_DEFAULT_COLOR);
 			break;
 		case PLAYER:
-			ansi_set_color(ANSI_CYAN);
-			putchar('p');
+			ansi_set_bg_color(ANSI_BLACK);
+			ansi_set_color(ANSI_GREEN);
+			ansi_bold(true);
+			fputs("☻", stdout);
+			ansi_bold(false);
 			ansi_set_color(ANSI_DEFAULT_COLOR);
+			ansi_set_bg_color(ANSI_DEFAULT_COLOR);
 			break;
 	}
 }

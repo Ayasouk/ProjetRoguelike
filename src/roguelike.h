@@ -22,17 +22,17 @@ typedef enum {
 	/**
 	 * Case vide.
 	 */
-    AIR,
+	AIR,
 
 	/**
 	 * Case étant un mur.
 	 */
-    WALL,
+	WALL,
 
 	/**
 	 * Case contenant le joueur.
 	 */
-    PLAYER
+	PLAYER
 } Square;
 
 /**
@@ -43,22 +43,22 @@ typedef enum {
 	/**
 	 * Nord (haut).
 	 */
-    NORTH,
+	NORTH,
 
 	/**
 	 * Est (droite).
 	 */
-    EAST,
+	EAST,
 
 	/**
 	 * Sud (bas).
 	 */
-    SOUTH,
+	SOUTH,
 
 	/**
 	 * Ouest (gauche).
 	 */
-    WEST
+	WEST
 } Direction;
 
 /**
@@ -102,6 +102,7 @@ void move_player(Direction direction);
 
 /**
  * Calcule si le joueur peut se déplacer dans la direction demandée.
+ * @param direction La direction à tester.
  * @return Si le joueur peut se déplacer dans la direction demandée.
  */
 boolean player_can_move(Direction direction);

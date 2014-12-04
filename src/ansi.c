@@ -95,11 +95,11 @@ void ansi_show_cursor() {
 }
 
 void ansi_set_color(ANSIColor color) {
-	printf("%s%im", CSI, 30 + color);
+	printf("%s%um", CSI, color);
 }
 
 void ansi_set_bg_color(ANSIColor color) {
-	printf("%s%im", CSI, 40 + color);
+	printf("%s%um", CSI, color + 10);
 }
 
 void ansi_set_color_index(unsigned char color) {
@@ -119,9 +119,29 @@ void ansi_set_bg_color_rgb(unsigned char red, unsigned char green, unsigned char
 }
 
 void ansi_set_font(ANSIFont font) {
-	printf("%s%im", CSI, 10 + font);
+	printf("%s%um", CSI, 10 + font);
 }
 
 void ansi_normal() {
 	printf("%s0m", CSI);
+}
+
+void ansi_bold(boolean bold) {
+	printf("%s%um", CSI, bold ? 1 : 21);
+}
+
+void ansi_underlined(boolean underlined) {
+	printf("%s%um", CSI, underlined ? 4 : 24);
+}
+
+void ansi_overlined(boolean overlined) {
+	printf("%s%um", CSI, overlined ? 53 : 55);
+}
+
+void ansi_italic(boolean italic) {
+	printf("%s%um", CSI, italic ? 3 : 23);
+}
+
+void ansi_framed(boolean framed) {
+	printf("%s%um", CSI, framed ? 51 : 54);
 }
