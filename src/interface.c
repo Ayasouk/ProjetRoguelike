@@ -50,7 +50,7 @@ void init_interface() {
 	ansi_set_color(ANSI_DEFAULT_COLOR);
 	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
 	ansi_set_font(ANSI_DEFAULT_FONT);
-	ansi_hide_cursor();
+	ansi_hide_cursor(true);
 	ansi_clear_screen();
 	ansi_save_position();
 }
@@ -61,7 +61,7 @@ void final_interface() {
 	ansi_set_color(ANSI_DEFAULT_COLOR);
 	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
 	putchar('\n');
-	ansi_show_cursor();
+	ansi_hide_cursor(false);
 }
 
 void display_message(char message[]) {
