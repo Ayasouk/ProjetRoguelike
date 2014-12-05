@@ -22,6 +22,7 @@ int main() {//pour l'instant, fonction main pour tester l'interface et la géné
 	generate_maze();
 	while (1) {
 		display_maze(get_maze(), get_maze_dimension());
+		display_message("Okerlvjnirzhvnrhfucruiruncvuirehnvuivenuirevnuinguihvnruievhnruievneruivhnnguivhvnreuvhreuivhnuvhnurievhnruievhugivhnguievnguievnuienghvuienghuievnheuvnue");
 		switch (wait_action()) {
 			case TOP:
 				if (player_can_move(NORTH)) {

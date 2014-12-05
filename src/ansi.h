@@ -196,16 +196,16 @@ void ansi_previous_line(unsigned int n);
 
 /**
  * Place le curseur sur la colonne donnée.
- * @param n Le numéro de colonne.
+ * @param column Le numéro de colonne (commence à 1).
  */
-void ansi_set_column(unsigned int a);
+void ansi_set_column(unsigned int column);
 
 /**
  * Place le curseur sur la position donnée.
- * @param a Le numéro de ligne.
- * @param a Le numéro de colonne.
+ * @param line Le numéro de ligne (commence à 1).
+ * @param column Le numéro de colonne (commence à 1).
  */
-void ansi_set_position(unsigned int a, unsigned int b);
+void ansi_set_position(unsigned int line, unsigned int column);
 
 /**
  * Efface l'écran.

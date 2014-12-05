@@ -9,6 +9,9 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -32,47 +35,6 @@ TerminalAttribut before;
  * Variable servant à stocker les attributs du terminal pendant le jeu.
  */
 TerminalAttribut actual;
-
-void init_interface() {
-	tcgetattr(STDIN_FILENO, &before);//sauvegarde des attributs du terminal avant le jeu
-	actual = before;//copie de ces attributs
-#ifdef __APPLE__
-#ifdef TARGET_OS_MAC
-	actual.c_cc[VMIN] = 1;//nombre minimum de caractères pour la lecture à 1
-#endif
-#else
-	actual.c_cc[VMIN] = 0;//nombre minimum de caractères pour la lecture à 0
-#endif
-	actual.c_cc[VTIME] = 0;//temps d'attente lors de la lecture à 0
-	actual.c_lflag &= ~ECHO;//désactivation de l'affichage de la saisie
-	actual.c_lflag &= ~ICANON;//passage en mode non canonique
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, &actual);//appliquation des attributs au terminal
-	ansi_set_color(ANSI_DEFAULT_COLOR);
-	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
-	ansi_set_font(ANSI_DEFAULT_FONT);
-	ansi_hide_cursor(true);
-	ansi_clear_screen();
-	ansi_save_position();
-}
-
-void final_interface() {
-	clear_message();
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, &before);//réappliquation des atributs d'avant le jeu
-	ansi_set_color(ANSI_DEFAULT_COLOR);
-	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
-	putchar('\n');
-	ansi_hide_cursor(false);
-}
-
-void display_message(char message[]) {
-	ansi_clear_screen_after();
-	fputs(message, stdout);
-	ansi_restore_position();
-}
-
-void clear_message() {
-	ansi_clear_screen_after();
-}
 
 /**
  * La dimension actuelle du labyrinthe.
@@ -107,6 +69,70 @@ void print_square(Square square) {
 	}
 }
 
+short get_terminal_width() {
+	struct winsize size;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	return size.ws_col;
+}
+
+void init_interface() {
+	tcgetattr(STDIN_FILENO, &before);//sauvegarde des attributs du terminal avant le jeu
+	actual = before;//copie de ces attributs
+#ifdef __APPLE__
+#ifdef TARGET_OS_MAC
+	actual.c_cc[VMIN] = 1;//nombre minimum de caractères pour la lecture à 1
+#endif
+#else
+	actual.c_cc[VMIN] = 0;//nombre minimum de caractères pour la lecture à 0
+#endif
+	actual.c_cc[VTIME] = 0;//temps d'attente lors de la lecture à 0
+	actual.c_lflag &= ~ECHO;//désactivation de l'affichage de la saisie
+	actual.c_lflag &= ~ICANON;//passage en mode non canonique
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &actual);//appliquation des attributs au terminal
+	ansi_set_color(ANSI_DEFAULT_COLOR);
+	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
+	ansi_set_font(ANSI_DEFAULT_FONT);
+	ansi_hide_cursor(true);
+	ansi_clear_screen();
+	ansi_save_position();
+}
+
+void final_interface() {
+	clear_message();
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &before);//réappliquation des atributs d'avant le jeu
+	ansi_set_color(ANSI_DEFAULT_COLOR);
+	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
+	putchar('\n');
+	ansi_hide_cursor(false);
+}
+
+void display_message(char message[]) {
+	char * temp_string;
+	int length = strlen(message), width = get_terminal_width(), i = 0;
+	ansi_clear_screen_after();
+	if (length > width) {
+		temp_string = (char *) malloc((width + 1) * sizeof(char));
+		for (; length > 0 ; length -= width) {
+			strncpy(temp_string, message + i * width, width);
+			temp_string[length > width ? width : length] = '\0';
+			fputs(temp_string, stdout);
+			putchar('\n');
+			ansi_set_column(1);
+			i++;
+		}
+		free(temp_string);
+		ansi_previous_line(i);
+		ansi_save_position();
+	} else {
+		fputs(message, stdout);
+		ansi_restore_position();
+	}
+}
+
+void clear_message() {
+	ansi_clear_screen_after();
+}
+
 void display_maze(Square * maze, Dimension * dimension) {
 	int i, j;
 	if (dimension->horizontal != current_dimension.horizontal || dimension->vertical != current_dimension.vertical) {
@@ -120,7 +146,8 @@ void display_maze(Square * maze, Dimension * dimension) {
 		for (j = 0 ; j < current_dimension.horizontal ; j++) {
 			print_square(maze[i * current_dimension.vertical + j]);
 		}
-		ansi_next_line(1);
+		putchar('\n');
+		ansi_set_column(1);
 	}
 	ansi_restore_position();
 }
