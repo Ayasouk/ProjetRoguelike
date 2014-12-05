@@ -106,7 +106,7 @@ void final_interface() {
 	ansi_hide_cursor(false);
 }
 
-void display_message(char message[]) {
+/*void display_message(char message[]) {
 	char * temp_string;
 	int length = strlen(message), width = get_terminal_width(), i = 0;
 	ansi_clear_screen_after();
@@ -127,6 +127,41 @@ void display_message(char message[]) {
 		fputs(message, stdout);
 		ansi_restore_position();
 	}
+}*/
+
+void display_message(char message[]) {
+	const int width = get_terminal_width(), length = strlen(message);
+	//const char * temp_string = (char *) malloc((width + 1) * sizeof(char));
+	int i, lines = 0;
+	ansi_set_column(2);
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	fputs("╔", stdout);
+	for (i = 0 ; i < width - 4 ; i++) {
+		fputs("═", stdout);
+	}
+	fputs("╗", stdout);
+	for (i = 0 ; i < length ; i++) {
+		if (i % (width - 4) == 0) {
+			putchar('\n');
+			ansi_set_column(2);
+			lines++;
+			ansi_set_color(ANSI_LIGHT_BLUE);
+			fputs("║", stdout);
+			ansi_set_column(width - 1);
+			fputs("║", stdout);
+			ansi_set_column(3);
+			ansi_set_color(ANSI_LIGHT_GREY);
+		}
+		putchar(message[i]);
+	}
+	putchar('\n');
+	ansi_set_column(2);
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	fputs("╚", stdout);
+	for (i = 0 ; i < width - 4 ; i++) {
+		fputs("═", stdout);
+	}
+	fputs("╝", stdout);
 }
 
 void clear_message() {
