@@ -127,8 +127,8 @@ void display_maze(Square * maze, Dimension * dimension) {
 
 void update_square(Square square, Location * location) {
 	ansi_up(current_dimension.vertical);
-	ansi_right(location->column);
-	ansi_down(location->row);
+	ansi_right(location->row);
+	ansi_down(location->line);
 	print_square(square);
 	ansi_restore_position();
 }
