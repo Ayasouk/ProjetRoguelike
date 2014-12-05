@@ -87,7 +87,7 @@ void ansi_restore_position() {
 }
 
 void ansi_hide_cursor(boolean hide) {
-	printf("%s?25%c", CSI, hide ? 'l' : 'c');
+	printf("%s?25%c", CSI, hide ? 'l' : 'h');
 }
 
 void ansi_set_color(ANSIColor color) {
