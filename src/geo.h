@@ -17,12 +17,12 @@ typedef struct {
 	/**
 	 * La ligne.
 	 */
-	int row;
+	int line;
 
 	/**
 	 * La colonne.
 	 */
-	int column;
+	int row;
 } Location;
 
 /**
