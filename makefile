@@ -80,3 +80,7 @@ docpost: docgen
 	chmod -R 755 ~/public_html/$(NAME)
 
 all: clean compile runtest docpost
+
+commit: clean
+	git add *
+	git commit -a

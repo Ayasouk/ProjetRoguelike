@@ -44,6 +44,7 @@ int main() {//pour l'instant, fonction main pour tester l'interface et la géné
 				}
 				break;
 			case EXIT:
+				display_message("Au revoir !");
 				final_interface();
 				final_roguelike();
 				return EXIT_SUCCESS;

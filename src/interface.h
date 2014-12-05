@@ -87,13 +87,6 @@ void clear_message();
 void display_maze(Square * maze, Dimension * dimension);
 
 /**
- * Met à jour une case du labyrinthe.
- * @param square Le nouvel état de la case.
- * @param location Les coordonnées de la case à mettre à jour.
- */
-void update_square(Square square, Location * location);
-
-/**
  * Attent que l'utilisateur effectue une action.
  * @return Le type d'action souhaitée par l'utilisateur.
  */
