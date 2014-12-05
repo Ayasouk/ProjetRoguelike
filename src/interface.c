@@ -75,6 +75,76 @@ short get_terminal_width() {
 	return size.ws_col;
 }
 
+#define WINDOW_MARGIN 6
+
+void print_window_top() {
+	const int width = get_terminal_width() - 2 * WINDOW_MARGIN;
+	int i;
+	ansi_set_column(WINDOW_MARGIN + 1);
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	fputs("╔", stdout);
+	for (i = 0 ; i < width - 2 ; i++) {
+		fputs("═", stdout);
+	}
+	fputs("╗", stdout);
+}
+
+void print_window_line() {
+	const int width = get_terminal_width() - 2 * WINDOW_MARGIN;
+	ansi_clear_line();
+	ansi_set_column(WINDOW_MARGIN + 1);
+	fputs("║", stdout);
+	ansi_set_column(WINDOW_MARGIN + width);
+	fputs("║", stdout);
+}
+
+void print_window_bottom() {
+	const int width = get_terminal_width() - 2 * WINDOW_MARGIN;
+	int i;
+	ansi_set_column(WINDOW_MARGIN + 1);
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	fputs("╠", stdout);
+	for (i = 0 ; i < width - 2 ; i++) {
+		fputs("═", stdout);
+	}
+	fputs("╣", stdout);
+	putchar('\n');
+	print_window_line();
+	ansi_set_column(WINDOW_MARGIN + 4);
+	ansi_set_color(ANSI_LIGHT_GREY);
+	fputs("Oui : ", stdout);
+	ansi_set_color(ANSI_LIGHT_GREEN);
+	putchar('O');
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	ansi_set_column(WINDOW_MARGIN + width - 9);
+	ansi_set_color(ANSI_LIGHT_GREY);
+	fputs("Non : ", stdout);
+	ansi_set_color(ANSI_LIGHT_RED);
+	putchar('N');
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	putchar('\n');
+	print_window_line();
+	ansi_set_column(WINDOW_MARGIN + 4);
+	ansi_set_color(ANSI_LIGHT_GREY);
+	fputs("Frapper : ", stdout);
+	ansi_set_color(ANSI_GREY);
+	fputs("ESPACE", stdout);
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	ansi_set_column(WINDOW_MARGIN + width - 17);
+	ansi_set_color(ANSI_LIGHT_GREY);
+	fputs("Quitter : ", stdout);
+	ansi_set_color(ANSI_RED);
+	fputs("ECHAP", stdout);
+	ansi_set_color(ANSI_LIGHT_BLUE);
+	putchar('\n');
+	ansi_set_column(WINDOW_MARGIN + 1);
+	fputs("╚", stdout);
+	for (i = 0 ; i < width - 2 ; i++) {
+		fputs("═", stdout);
+	}
+	fputs("╝", stdout);
+}
+
 void init_interface() {
 	tcgetattr(STDIN_FILENO, &before);//sauvegarde des attributs du terminal avant le jeu
 	actual = before;//copie de ces attributs
@@ -98,12 +168,13 @@ void init_interface() {
 }
 
 void final_interface() {
-	clear_message();
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, &before);//réappliquation des atributs d'avant le jeu
+	ansi_restore_position();
+	putchar('\n');
 	ansi_set_color(ANSI_DEFAULT_COLOR);
 	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
-	putchar('\n');
 	ansi_hide_cursor(false);
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &before);//réappliquation des atributs d'avant le jeu
+	putchar('\n');
 }
 
 /*void display_message(char message[]) {
@@ -130,42 +201,36 @@ void final_interface() {
 }*/
 
 void display_message(char message[]) {
-	const int width = get_terminal_width(), length = strlen(message);
+	const int width = get_terminal_width() - 2 * WINDOW_MARGIN, length = strlen(message);
 	//const char * temp_string = (char *) malloc((width + 1) * sizeof(char));
 	int i, lines = 0;
-	ansi_set_column(2);
-	ansi_set_color(ANSI_LIGHT_BLUE);
-	fputs("╔", stdout);
-	for (i = 0 ; i < width - 4 ; i++) {
-		fputs("═", stdout);
-	}
-	fputs("╗", stdout);
+	print_window_top();
 	for (i = 0 ; i < length ; i++) {
 		if (i % (width - 4) == 0) {
 			putchar('\n');
-			ansi_set_column(2);
+			print_window_line();
 			lines++;
-			ansi_set_color(ANSI_LIGHT_BLUE);
-			fputs("║", stdout);
-			ansi_set_column(width - 1);
-			fputs("║", stdout);
-			ansi_set_column(3);
 			ansi_set_color(ANSI_LIGHT_GREY);
+			ansi_set_column(WINDOW_MARGIN + 3);
 		}
 		putchar(message[i]);
 	}
 	putchar('\n');
-	ansi_set_column(2);
-	ansi_set_color(ANSI_LIGHT_BLUE);
-	fputs("╚", stdout);
-	for (i = 0 ; i < width - 4 ; i++) {
-		fputs("═", stdout);
-	}
-	fputs("╝", stdout);
+	print_window_bottom();
+	ansi_clear_screen_after();
+	ansi_save_position();
+	ansi_up(4 + lines);
 }
 
 void clear_message() {
+	print_window_top();
+	putchar('\n');
+	print_window_line();
+	putchar('\n');
+	print_window_bottom();
 	ansi_clear_screen_after();
+	ansi_save_position();
+	ansi_up(5);
 }
 
 void display_maze(Square * maze, Dimension * dimension) {
@@ -184,7 +249,7 @@ void display_maze(Square * maze, Dimension * dimension) {
 		putchar('\n');
 		ansi_set_column(1);
 	}
-	ansi_restore_position();
+	clear_message();
 }
 
 void update_square(Square square, Location * location) {
