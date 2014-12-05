@@ -37,9 +37,29 @@ TerminalAttribut before;
 TerminalAttribut actual;
 
 /**
- * La dimension actuelle du labyrinthe.
+ * Marge entre la fenre et le bord du terminal.
  */
-Dimension current_dimension = {-1, -1};
+#define WINDOW_MARGIN 6
+
+/**
+ * Marge entre la fenêtre et le labyrinthe.
+ */
+#define WINDOW_TOP_MARGIN 2
+
+/**
+ * Nombre de lignes qui composent la fenêtre quand le message est vide.
+ */
+#define NB_LINES_ON_EMPTY_MSG 5
+
+/**
+ * Hauteur actuelle du labyrinthe.
+ */
+int maze_height = 0;
+
+/**
+ * Hauteur actuelle de la fenêtre.
+ */
+int window_height = 0;
 
 /**
  * Fonction interne permettant d'afficher une case en fonction de son type.
@@ -69,14 +89,19 @@ void print_square(Square square) {
 	}
 }
 
+/**
+ * Retourne la largeur du terminal en nombre de caractère.
+ * @return La largeur du terminal en nombre de caractère.
+ */
 short get_terminal_width() {
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	return size.ws_col;
 }
 
-#define WINDOW_MARGIN 6
-
+/**
+ * Affiche le haut de la fenêtre.
+ */
 void print_window_top() {
 	const int width = get_terminal_width() - 2 * WINDOW_MARGIN;
 	int i;
@@ -89,15 +114,22 @@ void print_window_top() {
 	fputs("╗", stdout);
 }
 
+/**
+ * Affiche une ligne de fenêtre vide.
+ */
 void print_window_line() {
 	const int width = get_terminal_width() - 2 * WINDOW_MARGIN;
 	ansi_clear_line();
 	ansi_set_column(WINDOW_MARGIN + 1);
+	ansi_set_color(ANSI_LIGHT_BLUE);
 	fputs("║", stdout);
 	ansi_set_column(WINDOW_MARGIN + width);
 	fputs("║", stdout);
 }
 
+/**
+ * Affiche le bas de la fenêtre.
+ */
 void print_window_bottom() {
 	const int width = get_terminal_width() - 2 * WINDOW_MARGIN;
 	int i;
@@ -164,11 +196,10 @@ void init_interface() {
 	ansi_set_font(ANSI_DEFAULT_FONT);
 	ansi_hide_cursor(true);
 	ansi_clear_screen();
-	ansi_save_position();
 }
 
 void final_interface() {
-	ansi_restore_position();
+	ansi_down(window_height + WINDOW_TOP_MARGIN + maze_height);
 	putchar('\n');
 	ansi_set_color(ANSI_DEFAULT_COLOR);
 	ansi_set_bg_color(ANSI_DEFAULT_COLOR);
@@ -177,33 +208,29 @@ void final_interface() {
 	putchar('\n');
 }
 
-/*void display_message(char message[]) {
-	char * temp_string;
-	int length = strlen(message), width = get_terminal_width(), i = 0;
+void display_maze(Square * maze, Dimension * dimension) {
+	const int width = get_terminal_width();
+	int i, j;
 	ansi_clear_screen_after();
-	if (length > width) {
-		temp_string = (char *) malloc((width + 1) * sizeof(char));
-		for (; length > 0 ; length -= width) {
-			strncpy(temp_string, message + i * width, width);
-			temp_string[length > width ? width : length] = '\0';
-			fputs(temp_string, stdout);
-			putchar('\n');
-			ansi_set_column(1);
-			i++;
+	for (i = 0 ; i < dimension->vertical ; i++) {
+		ansi_set_column((width - dimension->horizontal) / 2);
+		for (j = 0 ; j < dimension->horizontal ; j++) {
+			print_square(maze[i * dimension->vertical + j]);
 		}
-		free(temp_string);
-		ansi_previous_line(i);
-		ansi_save_position();
-	} else {
-		fputs(message, stdout);
-		ansi_restore_position();
+		putchar('\n');
 	}
-}*/
+	maze_height = dimension->vertical;
+	ansi_previous_line(maze_height);
+	clear_message();//on affiche un message vide
+}
 
 void display_message(char message[]) {
 	const int width = get_terminal_width() - 2 * WINDOW_MARGIN, length = strlen(message);
-	//const char * temp_string = (char *) malloc((width + 1) * sizeof(char));
-	int i, lines = 0;
+	int i, lines = -1;
+	ansi_down(maze_height);
+	for (i = 0 ; i < WINDOW_TOP_MARGIN ; i++) {
+		putchar('\n');
+	}
 	print_window_top();
 	for (i = 0 ; i < length ; i++) {
 		if (i % (width - 4) == 0) {
@@ -218,46 +245,24 @@ void display_message(char message[]) {
 	putchar('\n');
 	print_window_bottom();
 	ansi_clear_screen_after();
-	ansi_save_position();
-	ansi_up(4 + lines);
+	window_height = NB_LINES_ON_EMPTY_MSG + lines;
+	ansi_previous_line(window_height + WINDOW_TOP_MARGIN + maze_height);
 }
 
 void clear_message() {
+	int i;
+	ansi_down(maze_height);
+	for (i = 0 ; i < WINDOW_TOP_MARGIN ; i++) {
+		putchar('\n');
+	}
 	print_window_top();
 	putchar('\n');
 	print_window_line();
 	putchar('\n');
 	print_window_bottom();
 	ansi_clear_screen_after();
-	ansi_save_position();
-	ansi_up(5);
-}
-
-void display_maze(Square * maze, Dimension * dimension) {
-	int i, j;
-	if (dimension->horizontal != current_dimension.horizontal || dimension->vertical != current_dimension.vertical) {
-		current_dimension = *dimension;
-		ansi_clear_screen();
-		ansi_down(current_dimension.vertical);
-		ansi_save_position();
-	}
-	ansi_up(current_dimension.vertical);
-	for (i = 0 ; i < current_dimension.vertical ; i++) {
-		for (j = 0 ; j < current_dimension.horizontal ; j++) {
-			print_square(maze[i * current_dimension.vertical + j]);
-		}
-		putchar('\n');
-		ansi_set_column(1);
-	}
-	clear_message();
-}
-
-void update_square(Square square, Location * location) {
-	ansi_up(current_dimension.vertical);
-	ansi_right(location->row);
-	ansi_down(location->line);
-	print_square(square);
-	ansi_restore_position();
+	window_height = NB_LINES_ON_EMPTY_MSG;
+	ansi_previous_line(window_height + WINDOW_TOP_MARGIN + maze_height);
 }
 
 Action wait_action() {
