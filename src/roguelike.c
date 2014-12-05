@@ -48,7 +48,26 @@ Dimension * get_maze_dimension() {
 	return &maze_dimension;
 }
 
-void generate_maze() {
+void generate_maze() {//fonction de génération via un fichier pour continuer le développement des autres fonctionnalité en attendant la vraie fonction de génération aléatoire
+	int i;
+	FILE * file = fopen("level.txt", "r");
+	free(maze);//libération de l'espace mémoire alloué au labyrinthe, inutile de vérifier si NULL car free(NULL) n'a tout simplement aucun effet
+	fscanf(file, "%i %i \n", &maze_dimension.horizontal, &maze_dimension.vertical);
+	maze = (Square *) malloc(maze_dimension.horizontal * maze_dimension.vertical * sizeof(Square));//allocation de la mémoire nécessaire pour stocker le labyrinthe
+	for (i = 0 ; i < maze_dimension.horizontal * maze_dimension.vertical ; i++) {//remplissage du labyrinthe par des mur
+		maze[i] = fgetc(file);
+		if (maze[i] == '\n') {
+			i--;
+		} else {
+			maze[i] -= '0';
+		}
+	}
+	fclose(file);
+	player_location.row = player_location.column = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
+	maze[player_location.row * maze_dimension.horizontal + player_location.column] = PLAYER;
+}
+
+/*void generate_maze() {//vraie fonction de génération à finir d'implémenter
 	int i;
 	free(maze);//libération de l'espace mémoire alloué au labyrinthe, inutile de vérifier si NULL car free(NULL) n'a tout simplement aucun effet
 	maze = (Square *) malloc(20 * 20 * sizeof(Square));//allocation de la mémoire nécessaire pour stocker le labyrinthe
@@ -61,7 +80,7 @@ void generate_maze() {
 	//génération des couloirs
 	player_location.row = player_location.column = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
 	maze[player_location.row * maze_dimension.horizontal + player_location.column] = PLAYER;
-}
+}*/
 
 Location * get_player_location() {
 	return &player_location;

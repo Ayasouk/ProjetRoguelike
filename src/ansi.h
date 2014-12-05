@@ -110,7 +110,7 @@ typedef enum {
 	/**
 	 * Police par défaut du terminal.
 	 */
-	ANSI_DEFAULT_FONT,
+	ANSI_DEFAULT_FONT = 10,
 
 	/**
 	 * Police alternative 1.
@@ -155,12 +155,7 @@ typedef enum {
 	/**
 	 * Police alternative 9.
 	 */
-	ANSI_ALTERNATE_FONT_9,
-
-	/**
-	 * Police d'écriture gothique. Rarement supporté.
-	 */
-	ANSI_FRAKTURE
+	ANSI_ALTERNATE_FONT_9
 } ANSIFont;
 
 void ansi_up(unsigned int n);

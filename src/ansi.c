@@ -119,7 +119,7 @@ void ansi_set_bg_color_rgb(unsigned char red, unsigned char green, unsigned char
 }
 
 void ansi_set_font(ANSIFont font) {
-	printf("%s%um", CSI, 10 + font);
+	printf("%s%um", CSI, font);
 }
 
 void ansi_normal() {
