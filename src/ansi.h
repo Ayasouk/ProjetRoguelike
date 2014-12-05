@@ -158,70 +158,192 @@ typedef enum {
 	ANSI_ALTERNATE_FONT_9
 } ANSIFont;
 
+/**
+ * Déplace le curseur vers le haut.
+ * @param n Le nombre de lignes dont le curseur va monter.
+ */
 void ansi_up(unsigned int n);
 
+/**
+ * Déplace le curseur vers le bas.
+ * @param n Le nombre de lignes dont le curseur va descendre.
+ */
 void ansi_down(unsigned int n);
 
+/**
+ * Déplace le curseur vers la droite.
+ * @param n Le nombre de colonnes dont le curseur va être décalé.
+ */
 void ansi_right(unsigned int n);
 
+/**
+ * Déplace le curseur vers la gauche.
+ * @param n Le nombre de colonnes dont le curseur va être décalé.
+ */
 void ansi_left(unsigned int n);
 
+/**
+ * Déplace le curseur vers le bas et le place en début de ligne.
+ * @param n Le nombre de lignes dont le curseur va descendre.
+ */
 void ansi_next_line(unsigned int n);
 
+/**
+ * Déplace le curseur vers le haut et le place en début de ligne.
+ * @param n Le nombre de lignes dont le curseur va monter.
+ */
 void ansi_previous_line(unsigned int n);
 
+/**
+ * Place le curseur sur la colonne donnée.
+ * @param n Le numéro de colonne.
+ */
 void ansi_set_column(unsigned int a);
 
+/**
+ * Place le curseur sur la position donnée.
+ * @param a Le numéro de ligne.
+ * @param a Le numéro de colonne.
+ */
 void ansi_set_position(unsigned int a, unsigned int b);
 
+/**
+ * Efface l'écran.
+ */
 void ansi_clear_screen();
 
+/**
+ * Efface du début de l'écran jusqu'au le curseur.
+ */
 void ansi_clear_screen_before();
 
+/**
+ * Efface de la fin de l'écran jusqu'au le curseur.
+ */
 void ansi_clear_screen_after();
 
+/**
+ * Efface la ligne.
+ */
 void ansi_clear_line();
 
+/**
+ * Efface du début de la ligne jusqu'au curseur.
+ */
 void ansi_clear_line_before();
 
+/**
+ * Efface de la fin de la ligne jusqu'au curseur.
+ */
 void ansi_clear_line_after();
 
+/**
+ * Décale l'écran vers le haut.
+ * @param n Le nombre de lignes dont l'écran va être décalé.
+ */
 void ansi_scroll_up(unsigned int n);
 
+/**
+ * Décale l'écran vers le bas.
+ * @param n Le nombre de lignes dont l'écran va être décalé.
+ */
 void ansi_scroll_down(unsigned int n);
 
+/**
+ * Sauvegarde la position du curseur.
+ */
 void ansi_save_position();
 
+/**
+ * Restaure la position du curseur à celle sauvegardée.
+ */
 void ansi_restore_position();
 
-void ansi_hide_cursor();
+/**
+ * Change si le curseur doit être caché ou non.
+ * @param hide Si le curseur doit être caché ou non.
+ */
+void ansi_hide_cursor(boolean hide);
 
-void ansi_show_cursor();
-
+/**
+ * Change la couleur du texte.
+ * @param color La couleur.
+ */
 void ansi_set_color(ANSIColor color);
 
+/**
+ * Change la couleur de l'arrière plan.
+ * @param color La couleur.
+ */
 void ansi_set_bg_color(ANSIColor color);
 
-void ansi_set_color_index(unsigned char color);
+/**
+ * Change la couleur du texte via l'index de la couleur.
+ * @param index L'index de la couleur (de 0 à 255).
+ */
+void ansi_set_color_index(unsigned char index);
 
-void ansi_set_bg_color_index(unsigned char color);
+/**
+ * Change la couleur de l'arrière plan via l'index de la couleur.
+ * @param index L'index de la couleur (de 0 à 255).
+ */
+void ansi_set_bg_color_index(unsigned char index);
 
+/**
+ * Change la couleur du texte via une composition RGB.
+ * @param red La valeur de rouge.
+ * @param green La valeur de vert.
+ * @param blue La valeur de bleu.
+ */
 void ansi_set_color_rgb(unsigned char red, unsigned char green, unsigned char blue);
 
+/**
+ * Change la couleur de l'arrière plan via une composition RGB.
+ * @param red La valeur de rouge.
+ * @param green La valeur de vert.
+ * @param blue La valeur de bleu.
+ */
 void ansi_set_bg_color_rgb(unsigned char red, unsigned char green, unsigned char blue);
 
+/**
+ * Change la police de caractère.
+ * @param font La police de caractère.
+ */
 void ansi_set_font(ANSIFont font);
 
+/**
+ * Remet le formattage du texte à normal.
+ */
 void ansi_normal();
 
+/**
+ * Change si le texte doit être en gras ou non.
+ * @param bold Si le texte doit être en gras ou non.
+ */
 void ansi_bold(boolean bold);
 
+/**
+ * Change si le texte doit être souligné ou non.
+ * @param underlined Si le texte doit être souligné ou non.
+ */
 void ansi_underlined(boolean underlined);
 
+/**
+ * Change si le texte doit être surligné ou non.
+ * @param overlined Si le texte doit être surligné ou non.
+ */
 void ansi_overlined(boolean overlined);
 
+/**
+ * Change si le texte doit être en italique ou non.
+ * @param italic Si le texte doit être en italique ou non.
+ */
 void ansi_italic(boolean italic);
 
+/**
+ * Change si le texte doit être encadré ou non.
+ * @param framed Si le texts=e doit être encadré ou non.
+ */
 void ansi_framed(boolean framed);
 
 #endif

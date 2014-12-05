@@ -86,12 +86,8 @@ void ansi_restore_position() {
 	printf("%su", CSI);
 }
 
-void ansi_hide_cursor() {
-	printf("%s?25l", CSI);
-}
-
-void ansi_show_cursor() {
-	printf("%s?25h", CSI);
+void ansi_hide_cursor(boolean hide) {
+	printf("%s?25%c", CSI, hide ? 'l' : 'h');
 }
 
 void ansi_set_color(ANSIColor color) {
@@ -102,12 +98,12 @@ void ansi_set_bg_color(ANSIColor color) {
 	printf("%s%um", CSI, color + 10);
 }
 
-void ansi_set_color_index(unsigned char color) {
-	printf("%s385;%um", CSI, color);
+void ansi_set_color_index(unsigned char index) {
+	printf("%s385;%um", CSI, index);
 }
 
-void ansi_set_bg_color_index(unsigned char color) {
-	printf("%s485;%um", CSI, color);
+void ansi_set_bg_color_index(unsigned char index) {
+	printf("%s485;%um", CSI, index);
 }
 
 void ansi_set_color_rgb(unsigned char red, unsigned char green, unsigned char blue) {

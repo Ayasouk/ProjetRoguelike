@@ -63,8 +63,8 @@ void generate_maze() {//fonction de génération via un fichier pour continuer l
 		}
 	}
 	fclose(file);
-	player_location.row = player_location.column = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
-	maze[player_location.line * maze_dimension.row + player_location.column] = PLAYER;
+	player_location.line = player_location.row = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
+	maze[player_location.line * maze_dimension.horizontal + player_location.row] = PLAYER;
 }
 
 /*void generate_maze() {//vraie fonction de génération à finir d'implémenter
@@ -105,14 +105,29 @@ void move_player(Direction direction) {
 	maze[player_location.line * maze_dimension.horizontal + player_location.row] = PLAYER;
 }
 
-Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};
+boolean player_can_move(Direction direction) {
+	switch (direction) {
+		case NORTH:
+			return maze[maze_dimension.horizontal * (player_location.line - 1) + player_location.row] == AIR;
+		case SOUTH:
+			return maze[maze_dimension.horizontal * (player_location.line + 1) + player_location.row] == AIR;
+		case EAST:
+			return maze[maze_dimension.horizontal * player_location.line + player_location.row + 1] == AIR;
+		case WEST:
+			return maze[maze_dimension.horizontal * player_location.line + player_location.row - 1] == AIR;
+		default:
+			return false;
+	}
+}
+
+/*Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};
 
 int random2(int a, int b) {
 	b +=1;
 	return rand() % (b - a) + a;
 }
 
-/*void generer() {//la fonction de génération devient la fonction generate_maze(), continuer ou recopier le code à l'intérieur
+void generer() {//la fonction de génération devient la fonction generate_maze(), continuer ou recopier le code à l'intérieur
 	int i, j, n_salles, s;
 	Rectangle * salles;
 	for (i = 0 ; i < TAILLE ; i++) {
@@ -139,23 +154,3 @@ int random2(int a, int b) {
 		}
 	}
 }*/
-
-boolean player_can_move(Direction direction){
-	if( direction == NORTH ){
-		if( maze[maze_dimension.horizontal*player_location.line-1 + player_location.row] == WALL) return 0;
-		else return 1;
-	}
-	if( direction == SOUTH ){
-		if( maze[maze_dimension.horizontal*Location.line + Location.row+1] == WALL) return 0;
-		else return 1;
-	}
-	if( direction == EAST ){
-		if(maze[maze_dimension.horizontal*Location.line-1 + Location.row] == WALL) return 0;
-		else return 1;
-	}
-	if( direction == WEST ){
-		if(maze[maze_dimension.horizontal*Location.line+1 + Location.row] == WALL) return 0;
-		else return 1;
-	}
-
-}
