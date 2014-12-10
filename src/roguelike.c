@@ -13,6 +13,7 @@
 
 #include "geo.h"
 #include "roguelike.h"
+#define N 20
 
 /**
  * Le pointeur vers la matrice de case contenant le labyrinthe.
@@ -63,8 +64,8 @@ void generate_maze() {//fonction de génération via un fichier pour continuer l
 		}
 	}
 	fclose(file);
-	player_location.line = player_location.row = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
-	maze[player_location.line * maze_dimension.horizontal + player_location.row] = PLAYER;
+	player_location.row = player_location.column = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
+	maze[player_location.line * maze_dimension.row + player_location.column] = PLAYER;
 }
 
 /*void generate_maze() {//vraie fonction de génération à finir d'implémenter
@@ -81,6 +82,33 @@ void generate_maze() {//fonction de génération via un fichier pour continuer l
 	player_location.line = player_location.row = 2;//placement du joueur, pour l'instant arbitrairement à 2:2
 	maze[player_location.line * maze_dimension.horizontal + player_location.row] = PLAYER;
 }*/
+
+void generate_mazeAl(){
+	int i, taille_Ecran;
+	int nbr_salles, nbr_tronsson;
+	short taille_Ecran;
+	
+	free(maze);
+	maze_dimension.horizontal = get_terminal_width();
+	taille_Ecran = get_terminal_width*N /level;
+	maze_dimension.vertical = taille_Ecran/N;
+	maze = malloc(sizeof(Square)*maze_dimension.vertical*maze_dimension.horizontal);
+	
+	for(i=0; i < maze_dimension.horizontal*maze_dimension.vertical; i++){
+		maze[i] = WALL;
+		if(i == taille_Ecran % maze_dimension.vertical){
+			maze[i]='\n';
+		}
+	}
+	
+	//nbr_salles = (3 + random())*level;
+	
+	nbr_tronsson = 1 + random() % 5;
+	
+	
+	
+
+}
 
 Location * get_player_location() {
 	return &player_location;
@@ -105,29 +133,14 @@ void move_player(Direction direction) {
 	maze[player_location.line * maze_dimension.horizontal + player_location.row] = PLAYER;
 }
 
-boolean player_can_move(Direction direction) {
-	switch (direction) {
-		case NORTH:
-			return maze[maze_dimension.horizontal * (player_location.line - 1) + player_location.row] == AIR;
-		case SOUTH:
-			return maze[maze_dimension.horizontal * (player_location.line + 1) + player_location.row] == AIR;
-		case EAST:
-			return maze[maze_dimension.horizontal * player_location.line + player_location.row + 1] == AIR;
-		case WEST:
-			return maze[maze_dimension.horizontal * player_location.line + player_location.row - 1] == AIR;
-		default:
-			return false;
-	}
-}
-
-/*Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};
+Rectangle lab_dim = {0, 0, TAILLE - 1, TAILLE - 1};
 
 int random2(int a, int b) {
 	b +=1;
 	return rand() % (b - a) + a;
 }
 
-void generer() {//la fonction de génération devient la fonction generate_maze(), continuer ou recopier le code à l'intérieur
+/*void generer() {//la fonction de génération devient la fonction generate_maze(), continuer ou recopier le code à l'intérieur
 	int i, j, n_salles, s;
 	Rectangle * salles;
 	for (i = 0 ; i < TAILLE ; i++) {
@@ -154,3 +167,23 @@ void generer() {//la fonction de génération devient la fonction generate_maze(
 		}
 	}
 }*/
+
+boolean player_can_move(Direction direction){
+	if( direction == NORTH ){
+		if( maze[maze_dimension.horizontal*player_location.line-1 + player_location.row] == WALL) return 0;
+		else return 1;
+	}
+	if( direction == SOUTH ){
+		if( maze[maze_dimension.horizontal*Location.line + Location.row+1] == WALL) return 0;
+		else return 1;
+	}
+	if( direction == EAST ){
+		if(maze[maze_dimension.horizontal*Location.line-1 + Location.row] == WALL) return 0;
+		else return 1;
+	}
+	if( direction == WEST ){
+		if(maze[maze_dimension.horizontal*Location.line+1 + Location.row] == WALL) return 0;
+		else return 1;
+	}
+
+}
